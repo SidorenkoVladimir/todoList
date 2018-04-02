@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/main.css">
+    <title>React JS - todoList</title>
+    <script src="js/react.js"></script>
+    <script src="js/react-dom.js"></script>
+    <script src="js/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="program"></div>
+    <script type="text/babel">
+
+      class Task extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            edit: false,
+          };
+        };
+        edit = () => {
+          this.setState({edit: true})
+        };
+        save = () => {
+          this.props.updateText(this.refs.newTxt.value, this.props.index);
+          this.setState({edit: false})
+        };
+        remove = () => {
+          this.props.deleteBlock(this.props.index);
+        };
+        rendNorm = () => {
+          return (
+            <div className="box">
+              <div className="text">{this.props.children}</div>
+              <Check />
+              <button onClick={this.edit} className="btn light">Редактировать</button>
+              <button onClick={this.remove} className="btn red">Удалить</button>
+            </div>
+          );
+        }
+        rendEdit = () => {
+          return (
+            <div className="box">
+              <textarea ref="newTxt" defaultValue={this.props.children}></textarea>
+              <button onClick={this.save} className="btn success">Сохранить</button>
+            </div>
+          );
+        }
+        render() {
+          if (this.state.edit)
+          {
+            return this.rendEdit ();
+          }else 
+          {
+            return this.rendNorm ();
+          }
+        }
+      }
+
+      class Check extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            checked: false
+          };
+        };
+        handleCheck = () => {
+          this.setState({checked: !this.state.checked});
+        };
+        render() {
+          let styles = {};
+          var message;
+          if (this.state.checked) {
+            message = 'выполнено';
+            styles.backgroundColor = 'green';
+          } else {
+            message = 'не выполнено';
+            styles.backgroundColor = 'red';
+          }
+          return (
+            <div className="check_box" style={styles}>
+              <input type="checkbox" onChange={this.handleCheck} defaultChecked={this.state.checked} />
+              <p>Задание {message}</p>
+            </div>
+          );
+        }
+      }
+
+      class NewElem extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            add: false,
+          };
+        };
+        add = (text) => {
+          this.setState({add: true})
+        };
+        addEl = (text) => {
+          this.props.addEl(this.refs.newEl.value);
+          this.setState({add: false})
+        };
+        cancel = (text) => {
+          this.setState({add: false})
+        };
+        addActive = () => {
+          return (
+            <div className="box_add">
+              <textarea ref="newEl" defaultValue='Новое задание'></textarea>
+              <button onClick= {this.addEl.bind (null,'as')} className="btn success addWork">Добавить</button>
+              <button onClick= {this.cancel} className="btn red cancel">Отмена</button>
+            </div>
+          );
+        };
+        addNotActive = () => {
+          return (
+            <div className="box_add">
+              <button onClick= {this.add} className="btn new">Новое задание</button>
+            </div>
+          );
+        };
+        render() {
+          if (this.state.add)
+          {
+            return this.addActive ();
+          }else 
+          {
+            return this.addNotActive ();
+          }
+        }
+      }
+
+      class Field extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            tasks: [
+              'Разобраться с React JS',
+              'Сделать задание',
+              'Выжить в этом несправедливом мире'
+            ]
+          };
+        };
+        updateText = (text, i) => {
+          var arr = this.state.tasks;
+          arr[i] = text;
+          this.setState ({tasks: arr});
+        };
+        deleteBlock = (i) => {
+          var arr = this.state.tasks;
+          arr.splice (i, 1);
+          this.setState ({tasks: arr});
+        };
+        add = (text) => {
+          var arr = this.state.tasks;
+          arr.push (text);
+          this.setState ({tasks: arr});
+        };
+        eachTask = (item, i) => {
+          return (
+            <Task key={i} index={i} updateText={this.updateText} deleteBlock={this.deleteBlock}>
+              {item}
+            </Task>
+          );
+        };
+        render() {
+          return (
+             <div className="field">
+              {
+                this.state.tasks.map (this.eachTask)
+              }
+              <NewElem addEl={this.add} />
+            </div> 
+          );
+        }
+      }
+     
+			const app = document.getElementById('program');
+
+      ReactDOM.render(
+      <Field />, app);
+
+    </script>
+  </body>
+</html>
