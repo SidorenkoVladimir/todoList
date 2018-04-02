@@ -25,6 +25,7 @@ body {
 .check_box {
   background-color: red;
   text-align: center;
+  margin: 10px;
 }
 
 .check_box input, .check_box p{
@@ -34,6 +35,7 @@ body {
 
 .check_box input{
   float: left;
+  margin-left: 5px;
 }
 
 .box:last-child {
@@ -88,6 +90,7 @@ textarea{
   font-size: 0.7em;
   width: 90%;
   outline: none;
+  color: black;
 }
 
 textarea:focus{
